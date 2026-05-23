@@ -1,106 +1,875 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ro">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Romania — Points of Interest</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DEKRA Moldova — Strategie de Dezvoltare 2025–2030</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Sans+3:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --dekra: #006837;
+    --dekra-mid: #00a04b;
+    --dekra-light: #e8f5ee;
+    --gold: #c8973a;
+    --gold-light: #f7eed8;
+    --ink: #1a1a1a;
+    --muted: #5a5a5a;
+    --rule: #d4d4d4;
+    --bg: #faf9f6;
+    --white: #ffffff;
+  }
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  * { margin: 0; padding: 0; box-sizing: border-box; }
 
-  <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-        crossorigin="" />
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.7;
+  }
 
-  <!-- Leaflet MarkerCluster CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+  /* ── COVER ── */
+  .cover {
+    background: var(--dekra);
+    color: white;
+    padding: 80px 80px 60px;
+    position: relative;
+    overflow: hidden;
+    min-height: 340px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
 
-  <!-- App CSS -->
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/markers.css">
+  .cover::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -80px;
+    width: 420px; height: 420px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .cover::after {
+    content: '';
+    position: absolute;
+    bottom: -100px; left: 40%;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    background: rgba(0,160,75,0.3);
+  }
+
+  .cover-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    margin-bottom: 18px;
+  }
+
+  .cover h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 52px;
+    font-weight: 900;
+    line-height: 1.08;
+    margin-bottom: 20px;
+    max-width: 640px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cover-sub {
+    font-size: 16px;
+    color: rgba(255,255,255,0.75);
+    position: relative;
+    z-index: 1;
+    max-width: 560px;
+    margin-bottom: 36px;
+  }
+
+  .cover-meta {
+    display: flex;
+    gap: 48px;
+    position: relative;
+    z-index: 1;
+    padding-top: 28px;
+    border-top: 1px solid rgba(255,255,255,0.2);
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+  }
+  .meta-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+    margin-bottom: 4px;
+  }
+  .meta-val {
+    font-size: 14px;
+    font-weight: 600;
+    color: white;
+  }
+
+  /* ── LAYOUT ── */
+  .page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 40px 80px;
+  }
+
+  /* ── EXECUTIVE SUMMARY BAR ── */
+  .exec-bar {
+    background: var(--gold-light);
+    border-left: 4px solid var(--gold);
+    padding: 28px 36px;
+    margin: 48px 0 56px;
+    border-radius: 0 6px 6px 0;
+  }
+
+  .exec-bar h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+  }
+
+  .exec-bar p {
+    font-size: 16px;
+    color: var(--ink);
+    line-height: 1.75;
+  }
+
+  /* ── SECTION ── */
+  .section {
+    margin-bottom: 60px;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+    padding-bottom: 14px;
+    border-bottom: 2px solid var(--dekra);
+  }
+
+  .section-num {
+    width: 38px; height: 38px;
+    background: var(--dekra);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--dekra);
+    line-height: 1.2;
+  }
+
+  /* ── PARTNER PROFILE ── */
+  .partner-card {
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: 10px;
+    padding: 32px 36px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 28px;
+    align-items: start;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    margin-bottom: 28px;
+  }
+
+  .partner-avatar {
+    width: 72px; height: 72px;
+    background: var(--dekra);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 900;
+    color: white;
+    flex-shrink: 0;
+  }
+
+  .partner-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .partner-title {
+    font-size: 13px;
+    color: var(--dekra-mid);
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    margin-bottom: 14px;
+  }
+
+  .partner-bio {
+    font-size: 14.5px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .tag-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .tag {
+    background: var(--dekra-light);
+    color: var(--dekra);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 12px;
+    border-radius: 20px;
+    letter-spacing: 0.3px;
+  }
+
+  .tag.gold {
+    background: var(--gold-light);
+    color: #8a6420;
+  }
+
+  /* ── ASSET GRID ── */
+  .asset-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+
+  .asset-card {
+    background: white;
+    border: 1px solid var(--rule);
+    border-radius: 8px;
+    padding: 22px 24px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+  }
+
+  .asset-icon {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+
+  .asset-card h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+
+  .asset-card p {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  /* ── PILLARS ── */
+  .pillar {
+    background: white;
+    border-radius: 10px;
+    border: 1px solid var(--rule);
+    padding: 28px 32px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.05);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .pillar::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 5px;
+    background: var(--dekra);
+  }
+
+  .pillar.gold::before { background: var(--gold); }
+  .pillar.teal::before { background: #0080a0; }
+
+  .pillar-head {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 14px;
+  }
+
+  .pillar-badge {
+    background: var(--dekra-light);
+    color: var(--dekra);
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .pillar.gold .pillar-badge { background: var(--gold-light); color: #8a6420; }
+  .pillar.teal .pillar-badge { background: #e0f2f8; color: #0080a0; }
+
+  .pillar h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .pillar p {
+    font-size: 14.5px;
+    color: var(--muted);
+    line-height: 1.75;
+    margin-bottom: 14px;
+  }
+
+  .pillar ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .pillar ul li {
+    font-size: 14px;
+    color: var(--ink);
+    padding: 5px 0;
+    padding-left: 18px;
+    position: relative;
+  }
+
+  .pillar ul li::before {
+    content: '\2192';
+    position: absolute;
+    left: 0;
+    color: var(--dekra);
+    font-weight: 700;
+  }
+
+  .pillar.gold ul li::before { color: var(--gold); }
+  .pillar.teal ul li::before { color: #0080a0; }
+
+  /* ── ROADMAP ── */
+  .roadmap {
+    position: relative;
+    padding-left: 32px;
+  }
+
+  .roadmap::before {
+    content: '';
+    position: absolute;
+    left: 10px; top: 8px; bottom: 8px;
+    width: 2px;
+    background: var(--rule);
+  }
+
+  .road-item {
+    position: relative;
+    margin-bottom: 36px;
+  }
+
+  .road-dot {
+    position: absolute;
+    left: -32px;
+    top: 6px;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--dekra);
+    border: 3px solid var(--bg);
+    box-shadow: 0 0 0 2px var(--dekra);
+  }
+
+  .road-phase {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--dekra);
+    margin-bottom: 4px;
+  }
+
+  .road-item h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+
+  .road-item p {
+    font-size: 14px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  .road-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+
+  /* ── METRICS ── */
+  .metrics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+    margin: 32px 0;
+  }
+
+  .metric-box {
+    background: var(--dekra);
+    color: white;
+    border-radius: 10px;
+    padding: 24px 20px;
+    text-align: center;
+  }
+
+  .metric-box.light {
+    background: var(--dekra-light);
+    color: var(--dekra);
+  }
+
+  .metric-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 38px;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .metric-desc {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    opacity: 0.85;
+    line-height: 1.4;
+  }
+
+  /* ── RISK TABLE ── */
+  .risk-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    margin-top: 8px;
+  }
+
+  .risk-table th {
+    background: var(--dekra);
+    color: white;
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+  }
+
+  .risk-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+    color: var(--muted);
+  }
+
+  .risk-table tr:nth-child(even) td {
+    background: #f9f9f9;
+  }
+
+  .risk-level {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  .risk-high { background: #fde8e8; color: #b91c1c; }
+  .risk-med  { background: #fef3c7; color: #92400e; }
+  .risk-low  { background: var(--dekra-light); color: var(--dekra); }
+
+  /* ── CONCLUSION ── */
+  .conclusion {
+    background: var(--dekra);
+    color: white;
+    border-radius: 12px;
+    padding: 40px 44px;
+    margin-top: 48px;
+  }
+
+  .conclusion h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    line-height: 1.2;
+  }
+
+  .conclusion p {
+    font-size: 15px;
+    line-height: 1.8;
+    color: rgba(255,255,255,0.85);
+  }
+
+  .conclusion .signature {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(255,255,255,0.2);
+    display: flex;
+    gap: 48px;
+    flex-wrap: wrap;
+  }
+
+  .sig-block {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .sig-label {
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.5);
+  }
+
+  .sig-value {
+    font-size: 15px;
+    font-weight: 600;
+    color: white;
+  }
+
+  /* ── PRINT / MEDIA ── */
+  @media (max-width: 680px) {
+    .cover { padding: 48px 28px 40px; }
+    .cover h1 { font-size: 34px; }
+    .page { padding: 0 20px 60px; }
+    .asset-grid { grid-template-columns: 1fr; }
+    .metrics { grid-template-columns: 1fr 1fr; }
+    .partner-card { grid-template-columns: 1fr; }
+    .cover-meta { gap: 24px; flex-wrap: wrap; }
+    .conclusion { padding: 28px 24px; }
+  }
+</style>
 </head>
 <body>
 
-  <!-- Map -->
-  <div id="map"></div>
-
-  <!-- Loading indicator -->
-  <div id="loading-status">Loading…</div>
-
-  <!-- Filter Panel (left sidebar) -->
-  <div id="filter-panel">
-    <div class="filter-header" id="filter-toggle">
-      <div class="header-brand">
-        <div class="brand-logo">
-          <svg viewBox="0 0 36 42" width="36" height="42" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M18 2L2 10v14c0 10 16 16 16 16s16-6 16-16V10L18 2z"
-                  fill="rgba(202,150,14,0.08)" stroke="#CA960E" stroke-width="1.2" stroke-linejoin="round"/>
-            <path d="M9 28L14 17L18 22L22 14L27 28H9z"
-                  fill="#CA960E" opacity="0.75"/>
-          </svg>
-        </div>
-        <div class="brand-text">
-          <span class="header-title">ROMANIA</span>
-          <span class="header-sub">Points of Interest</span>
-        </div>
-      </div>
-      <button id="filter-toggle-btn" aria-label="Toggle filter panel">
-        <svg viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg" width="18" height="14">
-          <line x1="0" y1="1"  x2="18" y2="1"  stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          <line x1="0" y1="7"  x2="18" y2="7"  stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          <line x1="0" y1="13" x2="18" y2="13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-      </button>
+<!-- ══════ COVER ══════ -->
+<div class="cover">
+  <div class="cover-label">Document Confidențial de Strategie · DEKRA Moldova</div>
+  <h1>Strategie de Dezvoltare a Serviciilor DEKRA în Republica Moldova<br>2025–2030</h1>
+  <p class="cover-sub">Valorificarea oportunităților generate de procesul de aderare la UE prin certificarea sistemelor de management și consolidarea parteneriatului local.</p>
+  <div class="cover-meta">
+    <div class="meta-item">
+      <span class="meta-label">Versiune</span>
+      <span class="meta-val">1.0 — Mai 2026</span>
     </div>
-    <div class="filter-body">
-      <div class="region-container">
-        <label class="region-label" for="region-select">County</label>
-        <div class="select-wrapper">
-          <select id="region-select">
-            <option value="">All Counties</option>
-          </select>
-          <svg class="select-chevron" viewBox="0 0 10 7" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
+    <div class="meta-item">
+      <span class="meta-label">Orizont</span>
+      <span class="meta-val">2025 – 2030</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Piața țintă</span>
+      <span class="meta-val">Republica Moldova</span>
+    </div>
+    <div class="meta-item">
+      <span class="meta-label">Partener local</span>
+      <span class="meta-val">Alexandru Vîșcu</span>
+    </div>
+  </div>
+</div>
+
+<!-- ══════ BODY ══════ -->
+<div class="page">
+
+  <!-- REZUMAT EXECUTIV -->
+  <div class="exec-bar">
+    <h2>Rezumat Executiv</h2>
+    <p>Republica Moldova se află într-un moment de transformare istorică: negocierile de aderare la Uniunea Europeană (deschise formal în septembrie 2025) generează o cerere masivă și urgentă de aliniere la standardele europene de calitate, mediu, siguranță și guvernanță. DEKRA — una dintre organizațiile de expertiză independentă de top la nivel mondial — este poziționată optim pentru a deveni furnizorul de referință al serviciilor de certificare și conformitate în Moldova. Această strategie definește modul în care un parteneriat strategic cu <strong>Alexandru Vîșcu</strong>, consultant cu experiență vastă în aparatul de stat și sistemul judiciar, poate accelera intrarea și consolidarea DEKRA pe această piață în plină efervescență.</p>
+  </div>
+
+  <!-- 1. CONTEXT -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <div class="section-title">Contextul Pieței: Moldova pe Drumul spre UE</div>
+    </div>
+    <p style="color:var(--muted);font-size:15px;line-height:1.8;margin-bottom:24px;">Programul Național de Aderare 2025–2029, aprobat de Guvern în mai 2025, constituie documentul-cheie de planificare a alinierii legislative la <em>acquis</em>-ul comunitar. Acesta creează un val de obligații de conformitate pentru instituțiile publice și sectorul privat deopotrivă, generând o cerere fără precedent de servicii de certificare, audit și formare.</p>
+
+    <div class="metrics">
+      <div class="metric-box">
+        <div class="metric-num">35+</div>
+        <div class="metric-desc">Capitole de negociere acquis UE deschise pentru aliniere</div>
       </div>
-      <div class="filter-actions">
-        <button id="toggle-all">Deselect All</button>
+      <div class="metric-box light">
+        <div class="metric-num">2030</div>
+        <div class="metric-desc">Orizont estimat de aderare — fereastră strategică de 4 ani</div>
       </div>
-      <div class="filter-checkboxes"></div>
+      <div class="metric-box">
+        <div class="metric-num">49K+</div>
+        <div class="metric-desc">Angajați DEKRA global · prezență în ~60 țări</div>
+      </div>
+    </div>
+
+    <div class="asset-grid">
+      <div class="asset-card">
+        <div class="asset-icon">🏛️</div>
+        <h4>Armonizare legislativă</h4>
+        <p>Transpunerea masivă a directivelor UE impune companiilor moldovenești să demonstreze conformitate cu standarde precum ISO 9001, 14001, 45001, GDPR/ISO 27001.</p>
+      </div>
+      <div class="asset-card">
+        <div class="asset-icon">📦</div>
+        <h4>Acces la piața unică</h4>
+        <p>Exportatorii moldoveni spre UE au nevoie de certificate recunoscute în toată Europa — marcaj CE, ENEC, certificare produs. DEKRA este organism notificat UE.</p>
+      </div>
+      <div class="asset-card">
+        <div class="asset-icon">🌱</div>
+        <h4>Agenda Verde și ESG</h4>
+        <p>Fondurile UE destinate Moldovei condiționează finanțarea de implementarea sistemelor de management al mediului (ISO 14001, ISO 50001).</p>
+      </div>
+      <div class="asset-card">
+        <div class="asset-icon">🔐</div>
+        <h4>Securitate și reziliență</h4>
+        <p>Cerințele de securitate cibernetică (NIS2 transpus) și continuitate (ISO 22301) devin obligatorii pentru operatorii de servicii esențiale din Moldova.</p>
+      </div>
     </div>
   </div>
 
-  <!-- Search -->
-  <div class="search-container">
-    <div class="search-box">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
-      </svg>
-      <input type="text" id="search-input" placeholder="Search attractions…" autocomplete="off">
-      <button id="search-clear" aria-label="Clear search">&times;</button>
+  <!-- 2. PARTENER LOCAL -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <div class="section-title">Partenerul Local: Alexandru Vîșcu</div>
     </div>
-    <div id="search-results"></div>
+
+    <div class="partner-card">
+      <div class="partner-avatar">AV</div>
+      <div>
+        <div class="partner-name">Alexandru Vîșcu</div>
+        <div class="partner-title">Consultant Principal · Cancelaria de Stat a Guvernului Republicii Moldova</div>
+        <p class="partner-bio">Jurist cu over 13 ani de experiență profesională, dintre care 10 ani în sistemul judiciar și administrativ de cel mai înalt nivel. A activat ca Șef al Secției Penale din cadrul Direcției Generalizare a Practicii Judiciare la Curtea Supremă de Justiție, asistent judiciar și consultant al Curții Supreme, iar în prezent monitorizează activitatea ministerelor și a structurilor subordonate Guvernului și examinează petiții de importanță juridico-economică în cadrul Cancelariei de Stat.</p>
+        <div class="tag-row">
+          <span class="tag">Curtea Supremă de Justiție</span>
+          <span class="tag">Cancelaria de Stat</span>
+          <span class="tag">Drept procesual penal</span>
+          <span class="tag">Expertiză acte normative</span>
+          <span class="tag gold">Rețele instituționale</span>
+          <span class="tag gold">Monitorizare ministere</span>
+          <span class="tag">Engleză C1 · Franceză C1 · Rusă C2</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:white;border:1px solid var(--rule);border-radius:10px;padding:28px 32px;box-shadow:0 1px 8px rgba(0,0,0,0.05);">
+      <h3 style="font-family:'Playfair Display',serif;font-size:18px;color:var(--dekra);margin-bottom:16px;">Valoarea Adăugată Unică a Parteneriatului</h3>
+      <p style="font-size:14.5px;color:var(--muted);margin-bottom:14px;">Alexandru Vîșcu aduce DEKRA un avantaj competitiv care nu poate fi replicat rapid de concurenți: <strong>legitimitate instituțională</strong> și acces direct la decidenți din aparatul de stat. Experiența sa la Curtea Supremă și Cancelaria de Stat traduce în:</p>
+      <ul style="list-style:none;padding:0;">
+        <li style="font-size:14px;padding:6px 0 6px 20px;position:relative;border-bottom:1px solid var(--rule);"><span style="position:absolute;left:0;color:var(--dekra);font-weight:700;">→</span> Relații directe cu funcționari din ministere și autorități de reglementare cheie pentru DEKRA (Economie, Mediu, Sănătate, ANRE, MOLDAC).</li>
+        <li style="font-size:14px;padding:6px 0 6px 20px;position:relative;border-bottom:1px solid var(--rule);"><span style="position:absolute;left:0;color:var(--dekra);font-weight:700;">→</span> Cunoaștere profundă a procesului de transpunere a directivelor UE și calendarului de implementare — esențial pentru anticiparea cererii de certificare.</li>
+        <li style="font-size:14px;padding:6px 0 6px 20px;position:relative;border-bottom:1px solid var(--rule);"><span style="position:absolute;left:0;color:var(--dekra);font-weight:700;">→</span> Capacitate de a naviga achizițiile publice și procedurile administrative, reducând barierele birocoratice pentru DEKRA.</li>
+        <li style="font-size:14px;padding:6px 0 6px 20px;position:relative;"><span style="position:absolute;left:0;color:var(--dekra);font-weight:700;">→</span> Credibilitate în mediul de afaceri și juridic moldovenesc, transferabilă brandului DEKRA pe piața locală.</li>
+      </ul>
+    </div>
   </div>
 
-  <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-          crossorigin=""></script>
+  <!-- 3. PILONI STRATEGICI -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <div class="section-title">Piloni Strategici de Dezvoltare</div>
+    </div>
 
-  <!-- Leaflet MarkerCluster JS -->
-  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <div class="pillar">
+      <div class="pillar-head">
+        <span class="pillar-badge">Pilon I</span>
+        <h3>Certificarea Sistemelor de Management</h3>
+      </div>
+      <p>Motorul principal al strategiei. Pe măsura alinierii legislative la acquis-ul UE, companiile moldovenești vor fi obligate sau puternic stimulate să certifice sistemele de management. DEKRA oferă portofoliu complet și recunoaștere globală.</p>
+      <ul>
+        <li><strong>ISO 9001</strong> (Calitate) — cerință de facto pentru furnizorii publici și exportatori UE</li>
+        <li><strong>ISO 14001 / ISO 50001</strong> (Mediu / Energie) — condiționalitate pentru fonduri europene</li>
+        <li><strong>ISO 45001</strong> (Securitate ocupațională) — aliniere la directivele UE privind SSM</li>
+        <li><strong>ISO 27001 / ISO 42001</strong> (Securitate cibernetică / IA) — NIS2 și reglementarea IA</li>
+        <li><strong>ISO 22000 / FSSC 22000</strong> — sectorul agroalimentar, un export-cheie moldovenesc spre UE</li>
+        <li><strong>Audituri integrate</strong> — combinate cu audit de sustenabilitate (ESG reporting)</li>
+      </ul>
+    </div>
 
-  <!-- App JS (order matters) -->
-  <script src="js/counties.js"></script>
-  <script src="js/categories.js"></script>
-  <script src="js/markers.js"></script>
-  <script src="js/filters.js"></script>
-  <script src="js/search.js"></script>
-  <script src="js/app.js"></script>
+    <div class="pillar gold">
+      <div class="pillar-head">
+        <span class="pillar-badge">Pilon II</span>
+        <h3>Parteneriat Instituțional cu Sectorul Public</h3>
+      </div>
+      <p>Prin expertiza lui Alexandru Vîșcu, DEKRA poate accesa un segment neexplorat de concurenți: instituțiile publice și autoritățile de reglementare care vor fi nevoite să-și certifice propriile sisteme de management pentru a demonstra capacitate administrativă europeană.</p>
+      <ul>
+        <li>Programe de certificare pentru ministere și autorități centrale (management calitate, mediu)</li>
+        <li>Consultanță pentru MOLDAC (organismul național de acreditare) în procesul de aliniere la EA/ILAC</li>
+        <li>Parteneriate cu ANRE, ANSA, Agenția de Mediu pentru certificare în domeniile reglementate</li>
+        <li>Participare la proiecte Twinning UE și programe de asistență tehnică (TAIEX)</li>
+        <li>Formare profesională pentru inspectori și auditori din cadrul autorităților publice</li>
+      </ul>
+    </div>
+
+    <div class="pillar teal">
+      <div class="pillar-head">
+        <span class="pillar-badge">Pilon III</span>
+        <h3>Servicii Conexe: Inspecție, Training și Consultanță Pre-Certificare</h3>
+      </div>
+      <p>Certificarea este produsul final — dar ecosistemul de servicii din amonte și aval generează venituri recurente și fidelizează clienții pe termen lung.</p>
+      <ul>
+        <li><strong>Pre-audit și gap analysis</strong> — evaluare inițială a distanței față de standard, cu plan de acțiune</li>
+        <li><strong>Training și workshop-uri</strong> — formare auditori interni, conștientizare management</li>
+        <li><strong>Inspecție industrială</strong> — echipamente sub presiune, instalații electrice, securitate la incendiu (aliniere la directive UE)</li>
+        <li><strong>Testare și certificare produse</strong> — marcaj CE pentru exportatorii moldoveni</li>
+        <li><strong>Audituri de sustenabilitate ESG</strong> — raportare CSRD pentru subsidiare ale companiilor europene</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 4. ROADMAP -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <div class="section-title">Foaie de Parcurs 2025–2030</div>
+    </div>
+
+    <div class="roadmap">
+      <div class="road-item">
+        <div class="road-dot"></div>
+        <div class="road-phase">Faza 1 · Q3–Q4 2025</div>
+        <h4>Fondarea Parteneriatului și Intrarea pe Piață</h4>
+        <p>Formalizarea parteneriatului DEKRA–Alexandru Vîșcu (acord de reprezentare/afiliere). Cartografierea principalilor actori instituționali și privați. Înregistrarea DEKRA sau a unui entități reprezentative în Moldova. Primele contacte cu MOLDAC, Ministerul Economiei și Camera de Comerț. Participare la evenimente de afaceri și conferințe dedicate aderării UE.</p>
+        <div class="road-tags">
+          <span class="tag">Formalizare juridică</span>
+          <span class="tag">Cartografiere piață</span>
+          <span class="tag">Networking instituțional</span>
+        </div>
+      </div>
+
+      <div class="road-item">
+        <div class="road-dot"></div>
+        <div class="road-phase">Faza 2 · Q1–Q2 2026</div>
+        <h4>Primele Certificate și Construcția Reputației</h4>
+        <p>Încheierea primelor contracte de certificare cu companii-pilot (preferabil exportatori spre UE sau subsidiare ale firmelor europene). Lansarea programelor de training. Publicarea primelor studii de caz de succes. Depunerea de oferte pentru proiecte finanțate UE (Twinning, TAIEX) cu sprijinul expertizei lui Alexandru Vîșcu în relația cu autoritățile.</p>
+        <div class="road-tags">
+          <span class="tag">Primele certificate DEKRA Moldova</span>
+          <span class="tag">Proiecte UE</span>
+          <span class="tag">Brand building</span>
+        </div>
+      </div>
+
+      <div class="road-item">
+        <div class="road-dot"></div>
+        <div class="road-phase">Faza 3 · 2027</div>
+        <h4>Scalare și Extindere Portofoliu</h4>
+        <p>Extinderea portofoliului spre ISO 27001, ISO 22000, IATF 16949 (dacă există cluster auto/industrial). Lansarea serviciului de inspecție industrială. Parteneriate cu asociații sectoriale (agroalimentar, IT, construcții). Negocierea unui MOU cu MOLDAC pentru recunoaștere reciprocă.</p>
+        <div class="road-tags">
+          <span class="tag">Portofoliu extins</span>
+          <span class="tag">Inspecție industrială</span>
+          <span class="tag">MOU MOLDAC</span>
+        </div>
+      </div>
+
+      <div class="road-item">
+        <div class="road-dot"></div>
+        <div class="road-phase">Faza 4 · 2028–2030</div>
+        <h4>Lider de Piață și Pregătire pentru Aderarea la UE</h4>
+        <p>DEKRA Moldova devine operatorul de referință în certificarea sistemelor de management. Pe măsura apropierii datei de aderare, cererea atinge un maxim — în special pentru certificările obligatorii prin directive UE. Explorarea extinderii spre țări vecine (Georgia, Armenia) folosind Moldova drept hub regional.</p>
+        <div class="road-tags">
+          <span class="tag">Market leadership</span>
+          <span class="tag">Pregătire aderare UE</span>
+          <span class="tag">Hub regional</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. RISCURI -->
+  <div class="section">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <div class="section-title">Riscuri și Măsuri de Atenuare</div>
+    </div>
+
+    <table class="risk-table">
+      <thead>
+        <tr>
+          <th>Risc</th>
+          <th>Nivel</th>
+          <th>Măsuri de Atenuare</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Instabilitate politică / Încetinirea aderării UE</strong></td>
+          <td><span class="risk-level risk-med">Mediu</span></td>
+          <td>Serviciile de certificare au valoare independentă de calendarul politic; diversificarea clientelei spre sectorul privat</td>
+        </tr>
+        <tr>
+          <td><strong>Concurență locală (organisme românești, SGS)</strong></td>
+          <td><span class="risk-level risk-med">Mediu</span></td>
+          <td>Diferențiere prin brandul global DEKRA + relații instituționale + audituri combinate/integrate</td>
+        </tr>
+        <tr>
+          <td><strong>Capacitate limitată a pieței (companii mici, resurse reduse)</strong></td>
+          <td><span class="risk-level risk-med">Mediu</span></td>
+          <td>Pachete accesibile de pre-certificare; prioritizare SME exportatoare spre UE; finanțare prin granturi UE</td>
+        </tr>
+        <tr>
+          <td><strong>Risc de conflict de interese pentru partener (funcție publică)</strong></td>
+          <td><span class="risk-level risk-high">Ridicat</span></td>
+          <td>Structurare juridică atentă a parteneriatului; separare clară a rolurilor; consultanță juridică specializată în incompatibilități conform legislației RM; tranziție treptată spre rol privat full-time</td>
+        </tr>
+        <tr>
+          <td><strong>Recunoașterea acreditărilor DEKRA de către MOLDAC</strong></td>
+          <td><span class="risk-level risk-low">Scăzut</span></td>
+          <td>DEKRA deține 200+ acreditări globale; dialog proactiv cu MOLDAC susținut de rețeaua instituțională a partenerului</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- CONCLUZIE -->
+  <div class="conclusion">
+    <h2>O Fereastră Istorică de Oportunitate</h2>
+    <p>Moldova traversează cel mai important moment de modernizare instituțională și economică din istoria sa recentă. Procesul de aderare la UE nu este un eveniment singular — este un val continuu de cerințe de conformitate, audit și certificare care va transforma peisajul de afaceri pe parcursul a cel puțin cinci ani. DEKRA, prin parteneriatul cu Alexandru Vîșcu, are oportunitatea unică de a fi prezent de la primele zile ale acestei transformări: cu legitimitate, expertiză recunoscută la nivel mondial și accesul direct la structurile de decizie care modelează viteza și direcția alinierii la standardele europene.</p>
+    <div class="signature">
+      <div class="sig-block">
+        <span class="sig-label">Document elaborat</span>
+        <span class="sig-value">Mai 2026</span>
+      </div>
+      <div class="sig-block">
+        <span class="sig-label">Partener strategic</span>
+        <span class="sig-value">Alexandru Vîșcu</span>
+      </div>
+      <div class="sig-block">
+        <span class="sig-label">Piața țintă</span>
+        <span class="sig-value">Republica Moldova</span>
+      </div>
+      <div class="sig-block">
+        <span class="sig-label">Organizație</span>
+        <span class="sig-value">DEKRA SE</span>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page -->
 </body>
 </html>
