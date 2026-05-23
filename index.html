@@ -32,13 +32,20 @@
   .cover {
     background: var(--dekra);
     color: white;
-    padding: 80px 80px 60px;
     position: relative;
     overflow: hidden;
     min-height: 340px;
+  }
+
+  .cover-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 80px 40px 60px;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    min-height: 340px;
+    position: relative;
   }
 
   .cover::before {
@@ -558,7 +565,7 @@
 
   /* ── PRINT / MEDIA ── */
   @media (max-width: 680px) {
-    .cover { padding: 48px 28px 40px; }
+    .cover-inner { padding: 48px 20px 40px; }
     .cover h1 { font-size: 34px; }
     .page { padding: 0 20px 60px; }
     .asset-grid { grid-template-columns: 1fr; }
@@ -573,25 +580,27 @@
 
 <!-- ══════ COVER ══════ -->
 <div class="cover">
-  <div class="cover-label">Document Confidențial de Strategie · DEKRA Moldova</div>
-  <h1>Strategie de Dezvoltare a Serviciilor DEKRA în Republica Moldova<br>2026–2031</h1>
-  <p class="cover-sub">Valorificarea oportunităților generate de procesul de aderare la UE prin certificarea sistemelor de management și consolidarea parteneriatului local.</p>
-  <div class="cover-meta">
-    <div class="meta-item">
-      <span class="meta-label">Versiune</span>
-      <span class="meta-val">1.0 — Mai 2026</span>
-    </div>
-    <div class="meta-item">
-      <span class="meta-label">Orizont</span>
-      <span class="meta-val">2026 – 2031</span>
-    </div>
-    <div class="meta-item">
-      <span class="meta-label">Piața țintă</span>
-      <span class="meta-val">Republica Moldova</span>
-    </div>
-    <div class="meta-item">
-      <span class="meta-label">Partener local</span>
-      <span class="meta-val">Alexandru Vîșcu</span>
+  <div class="cover-inner">
+    <div class="cover-label">Document Confidențial de Strategie · DEKRA Moldova</div>
+    <h1>Strategie de Dezvoltare a Serviciilor DEKRA în Republica Moldova<br>2026–2031</h1>
+    <p class="cover-sub">Valorificarea oportunităților generate de procesul de aderare la UE prin certificarea sistemelor de management și consolidarea parteneriatului local.</p>
+    <div class="cover-meta">
+      <div class="meta-item">
+        <span class="meta-label">Versiune</span>
+        <span class="meta-val">1.0 — Mai 2026</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Orizont</span>
+        <span class="meta-val">2026 – 2031</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Piața țintă</span>
+        <span class="meta-val">Republica Moldova</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Partener local</span>
+        <span class="meta-val">Alexandru Vîșcu</span>
+      </div>
     </div>
   </div>
 </div>
